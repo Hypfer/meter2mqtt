@@ -494,7 +494,7 @@ class MqttClient {
             `${discoveryTopic}/v_n_avg/config`,
             JSON.stringify({
                 "state_topic": `${baseTopic}/v/n/avg`,
-                "name": "Average L-N Voltage",
+                "name": "Average L to N Voltage",
                 "unit_of_measurement": "V",
                 "device_class": "voltage",
                 "state_class": "measurement",
@@ -511,7 +511,7 @@ class MqttClient {
             `${discoveryTopic}/v_l_avg/config`,
             JSON.stringify({
                 "state_topic": `${baseTopic}/v/l/avg`,
-                "name": "Average L-L Voltage",
+                "name": "Average L to L Voltage",
                 "unit_of_measurement": "V",
                 "device_class": "voltage",
                 "state_class": "measurement",
