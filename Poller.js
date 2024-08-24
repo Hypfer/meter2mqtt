@@ -44,7 +44,7 @@ class Poller {
     async poll() {
         let data;
         try {
-            data = await this.client.readHoldingRegisters(0, 60);
+            data = await this.client.readHoldingRegisters(0, 82);
         } catch(err) {
             Logger.warn("Error while polling", err)
         }
@@ -94,11 +94,14 @@ class Poller {
 
             HZ: parseShortValue(data.buffer, 102, 0.1, 5),
 
-            KWH_TOTAL: parseValue(data.buffer, 104, 4, 0.1, 5),
-            KVARH_TOTAL: parseValue(data.buffer, 108, 4, 0.1, 5),
+            KWH_IN_TOTAL: parseValue(data.buffer, 104, 4, 0.1, 5),
+            KVARH_IN_TOTAL: parseValue(data.buffer, 108, 4, 0.1, 5),
 
             DMD_W: parseValue(data.buffer, 112, 4, 0.1, 5),
             DMD_W_MAX: parseValue(data.buffer, 116, 4, 0.1, 5),
+            
+            KWH_OUT_TOTAL: parseValue(data.buffer, 156, 4, 0.1, 5),
+            KVARH_OUT_TOTAL: parseValue(data.buffer, 160, 4, 0.1, 5),
         };
 
         this.emitData(output);

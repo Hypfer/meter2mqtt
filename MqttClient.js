@@ -108,8 +108,11 @@ class MqttClient {
         this.client.publish(`${baseTopic}/va/total`, stringData.VA_TOTAL);
         this.client.publish(`${baseTopic}/var/total`, stringData.VAR_TOTAL);
 
-        this.client.publish(`${baseTopic}/kwh/total`, stringData.KWH_TOTAL);
-        this.client.publish(`${baseTopic}/kvarh/total`, stringData.KVARH_TOTAL);
+        this.client.publish(`${baseTopic}/kwh/total/in`, stringData.KWH_IN_TOTAL);
+        this.client.publish(`${baseTopic}/kvarh/total/in`, stringData.KVARH_IN_TOTAL);
+
+        this.client.publish(`${baseTopic}/kwh/total/out`, stringData.KWH_OUT_TOTAL);
+        this.client.publish(`${baseTopic}/kvarh/total/out`, stringData.KVARH_OUT_TOTAL);
 
         this.client.publish(`${baseTopic}/dmd/w`, stringData.DMD_W);
         this.client.publish(`${baseTopic}/dmd/w/max`, stringData.DMD_W_MAX);
@@ -593,15 +596,15 @@ class MqttClient {
         );
 
         this.client.publish(
-            `${discoveryTopic}/kwh_total/config`,
+            `${discoveryTopic}/kwh_total_in/config`,
             JSON.stringify({
-                "state_topic": `${baseTopic}/kwh/total`,
-                "name": "Total Energy Consumption",
+                "state_topic": `${baseTopic}/kwh/total/in`,
+                "name": "Total Energy In",
                 "unit_of_measurement": "kWh",
                 "device_class": "energy",
                 "state_class": "total_increasing",
-                "object_id": `meter2mqtt_${identifier}_kwh_total`,
-                "unique_id": `meter2mqtt_${identifier}_kwh_total`,
+                "object_id": `meter2mqtt_${identifier}_kwh_total_in`,
+                "unique_id": `meter2mqtt_${identifier}_kwh_total_in`,
                 "expire_after": 300,
                 "enabled_by_default": true,
                 "device": device
@@ -610,15 +613,49 @@ class MqttClient {
         );
 
         this.client.publish(
-            `${discoveryTopic}/kvarh_total/config`,
+            `${discoveryTopic}/kvarh_total_in/config`,
             JSON.stringify({
-                "state_topic": `${baseTopic}/kvarh/total`,
-                "name": "Total Reactive Energy Consumption",
+                "state_topic": `${baseTopic}/kvarh/total/in`,
+                "name": "Total Reactive Energy In",
                 "unit_of_measurement": "kVARh",
                 "device_class": "energy",
                 "state_class": "total_increasing",
-                "object_id": `meter2mqtt_${identifier}_kvarh_total`,
-                "unique_id": `meter2mqtt_${identifier}_kvarh_total`,
+                "object_id": `meter2mqtt_${identifier}_kvarh_total_in`,
+                "unique_id": `meter2mqtt_${identifier}_kvarh_total_in`,
+                "expire_after": 300,
+                "enabled_by_default": true,
+                "device": device
+            }),
+            {retain: true}
+        );
+
+        this.client.publish(
+            `${discoveryTopic}/kwh_total_out/config`,
+            JSON.stringify({
+                "state_topic": `${baseTopic}/kwh/total/out`,
+                "name": "Total Energy Out",
+                "unit_of_measurement": "kWh",
+                "device_class": "energy",
+                "state_class": "total_increasing",
+                "object_id": `meter2mqtt_${identifier}_kwh_total_out`,
+                "unique_id": `meter2mqtt_${identifier}_kwh_total_out`,
+                "expire_after": 300,
+                "enabled_by_default": true,
+                "device": device
+            }),
+            {retain: true}
+        );
+
+        this.client.publish(
+            `${discoveryTopic}/kvarh_total_out/config`,
+            JSON.stringify({
+                "state_topic": `${baseTopic}/kvarh/total/out`,
+                "name": "Total Reactive Energy Out",
+                "unit_of_measurement": "kVARh",
+                "device_class": "energy",
+                "state_class": "total_increasing",
+                "object_id": `meter2mqtt_${identifier}_kvarh_total_out`,
+                "unique_id": `meter2mqtt_${identifier}_kvarh_total_out`,
                 "expire_after": 300,
                 "enabled_by_default": true,
                 "device": device
