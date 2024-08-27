@@ -126,7 +126,7 @@ class MqttClient {
             return;
         }
         const baseTopic = `${MqttClient.TOPIC_PREFIX}/${identifier}`;
-        const discoveryTopic = "homeassistant/sensor/meter2mqtt";
+        const discoveryTopic = `homeassistant/sensor/meter2mqtt_${identifier}`;
         const device = {
             "manufacturer":"Carlo Gavazzi",
             "model":"EM24",
