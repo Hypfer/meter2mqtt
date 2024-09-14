@@ -345,7 +345,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l1/q`,
                 "name": "L1 Reactive Power",
-                "unit_of_measurement": "VAR",
+                "unit_of_measurement": "var",
                 "device_class": "reactive_power",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l1_q`,
@@ -362,7 +362,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l2/q`,
                 "name": "L2 Reactive Power",
-                "unit_of_measurement": "VAR",
+                "unit_of_measurement": "var",
                 "device_class": "reactive_power",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l2_q`,
@@ -379,7 +379,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l3/q`,
                 "name": "L3 Reactive Power",
-                "unit_of_measurement": "VAR",
+                "unit_of_measurement": "var",
                 "device_class": "reactive_power",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l3_q`,
@@ -447,7 +447,6 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l1/pf`,
                 "name": "L1 Power Factor",
-                "unit_of_measurement": "",
                 "device_class": "power_factor",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l1_pf`,
@@ -464,7 +463,6 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l2/pf`,
                 "name": "L2 Power Factor",
-                "unit_of_measurement": "",
                 "device_class": "power_factor",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l2_pf`,
@@ -481,7 +479,6 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/l3/pf`,
                 "name": "L3 Power Factor",
-                "unit_of_measurement": "",
                 "device_class": "power_factor",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_l3_pf`,
@@ -532,7 +529,6 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/pf/sum`,
                 "name": "Total Power Factor",
-                "unit_of_measurement": "",
                 "device_class": "power_factor",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_pf_sum`,
@@ -583,7 +579,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/var/total`,
                 "name": "Total Reactive Power",
-                "unit_of_measurement": "VAR",
+                "unit_of_measurement": "var",
                 "device_class": "reactive_power",
                 "state_class": "measurement",
                 "object_id": `meter2mqtt_${identifier}_var_total`,
@@ -617,7 +613,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/kvarh/total/in`,
                 "name": "Total Reactive Energy In",
-                "unit_of_measurement": "kVARh",
+                "unit_of_measurement": "kvarh",
                 "device_class": "energy",
                 "state_class": "total_increasing",
                 "object_id": `meter2mqtt_${identifier}_kvarh_total_in`,
@@ -651,7 +647,7 @@ class MqttClient {
             JSON.stringify({
                 "state_topic": `${baseTopic}/kvarh/total/out`,
                 "name": "Total Reactive Energy Out",
-                "unit_of_measurement": "kVARh",
+                "unit_of_measurement": "kvarh",
                 "device_class": "energy",
                 "state_class": "total_increasing",
                 "object_id": `meter2mqtt_${identifier}_kvarh_total_out`,
