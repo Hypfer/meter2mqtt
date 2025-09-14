@@ -14,8 +14,6 @@ class Poller {
     constructor() {
         this.eventEmitter = new EventEmitter();
         this.client = new ModbusRTU();
-
-        this.interval = undefined;
     }
 
     async initialize() {
@@ -25,20 +23,24 @@ class Poller {
             process.exit(1);
         }
 
-        const interval = process.env.POLL_INTERVAL || 5_000;
+        const interval = Number(process.env.POLL_INTERVAL) || 5_000;
 
         await this.client.connectTCP(process.env.POLL_IP, { port: 502 });
         this.client.setID(1);
-
-        this.interval = setInterval(() => {
-            this.poll().catch((err) => {
+        
+        const pollingLoop = async () => {
+            try {
+                await this.poll();
+            } catch (err) {
                 Logger.warn("Error during poll", err);
-            });
-        }, interval);
+            }
 
-        this.poll().catch(err => {
-            Logger.warn("Error during initial poll", err)
-        });
+            setTimeout(() => {
+                pollingLoop().catch(() => {/* intentional */});
+            }, interval - (Date.now() % interval));
+        };
+        
+        pollingLoop().catch(() => {/* intentional */});
     }
 
     async poll() {
