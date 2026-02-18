@@ -6,9 +6,11 @@ class MqttClient {
     /**
      *
      * @param {import("./Poller")} poller
+     * @param {import("./MarstekShellyEmu")} [marstekShellyEmu]
      */
-    constructor(poller) {
+    constructor(poller, marstekShellyEmu = null) {
         this.poller = poller;
+        this.marstekShellyEmu = marstekShellyEmu;
 
         this.identifier = process.env.IDENTIFIER || "Main";
 
@@ -40,6 +42,30 @@ class MqttClient {
 
         this.client.on("connect", () => {
             Logger.info("Connected to MQTT broker");
+
+            if (this.marstekShellyEmu) {
+                const topic = `${MqttClient.TOPIC_PREFIX}/${this.identifier}/marstek_shelly_emu/set/power`;
+
+                this.client.subscribe(topic, (err) => {
+                    if (err) {
+                        Logger.error(`Failed to subscribe to ${topic}`, err);
+                    } else {
+                        Logger.info(`Subscribed to marstek shelly emu override topic: ${topic}`);
+                    }
+                });
+            }
+        });
+
+        this.client.on("message", (topic, message) => {
+            if (this.marstekShellyEmu && topic === `${MqttClient.TOPIC_PREFIX}/${this.identifier}/marstek_shelly_emu/set/power`) {
+                const val = parseFloat(message.toString());
+
+                if (!isNaN(val)) {
+                    this.marstekShellyEmu.setOverride(val);
+                } else {
+                    Logger.warn(`Received invalid value: ${message.toString()}`);
+                }
+            }
         });
 
         this.client.on("error", (e) => {
