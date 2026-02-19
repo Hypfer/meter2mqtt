@@ -16,8 +16,17 @@ class MqttClient {
 
         this.autoconfTimestamp = {};
 
+        this.oversamplingFactor = parseInt(process.env.OVERSAMPLING_FACTOR) || 1;
+        this.sampleCounter = 0;
+
         this.poller.onData((data) => {
-            this.handleData(data);
+            this.sampleCounter++;
+
+            if (this.sampleCounter % this.oversamplingFactor === 0) {
+                this.sampleCounter = 0;
+
+                this.handleData(data);
+            }
         });
     }
 
