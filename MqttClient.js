@@ -67,12 +67,18 @@ class MqttClient {
 
         this.client.on("message", (topic, message) => {
             if (this.marstekShellyEmu && topic === `${MqttClient.TOPIC_PREFIX}/${this.identifier}/marstek_shelly_emu/set/power`) {
-                const val = parseFloat(message.toString());
-
-                if (!isNaN(val)) {
-                    this.marstekShellyEmu.setOverride(val);
-                } else {
-                    Logger.warn(`Received invalid value: ${message.toString()}`);
+                try {
+                    const payload = message.toString();
+                    const val = JSON.parse(payload);
+                    
+                    this.marstekShellyEmu.setOverride({
+                        total: typeof val.total === 'number' ? val.total : 0,
+                        l1: typeof val.l1 === 'number' ? val.l1 : 0,
+                        l2: typeof val.l2 === 'number' ? val.l2 : 0,
+                        l3: typeof val.l3 === 'number' ? val.l3 : 0
+                    });
+                } catch (e) {
+                    Logger.warn(`Failed to parse override JSON: ${message.toString()}`);
                 }
             }
         });

@@ -15,11 +15,14 @@ if (process.env.MARSTEK_SHELLY_EMU) {
 
     marstekShellyEmu = new MarstekShellyEmu();
     marstekShellyEmu.initialize();
-    
+
     poller.onData((data) => {
-        if (data && data.W_TOTAL !== undefined) {
-            marstekShellyEmu.updateMeterReading(data.W_TOTAL);
-        }
+        marstekShellyEmu.updateMeterReading({
+            total: data.W_TOTAL,
+            l1: data.W_L1,
+            l2: data.W_L2,
+            l3: data.W_L3
+        });
     });
 }
 

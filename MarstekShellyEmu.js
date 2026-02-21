@@ -4,7 +4,7 @@ const Logger = require("./Logger");
 class MarstekShellyEmu {
     constructor() {
         this.server = dgram.createSocket('udp4');
-        this.meterPower = null;
+        this.meterPower = { total: 0, l1: 0, l2: 0, l3: 0 };
         this.overridePower = null;
         this.overrideExpiryTimeout = null;
     }
@@ -20,24 +20,24 @@ class MarstekShellyEmu {
 
         this.server.on('message', (msg, rinfo) => {
             const message = msg.toString();
-            
-            if (message.includes('EM.GetStatus')) {
-                let currentWatts = this.getCurrentPower();
-                
-                if (currentWatts === null || currentWatts === undefined) {
-                    currentWatts = 0;
-                }
-                
-                currentWatts = currentWatts.toFixed(0);
 
-                Logger.debug(`Marstek request from ${rinfo.address}:${rinfo.port}, replying with ${currentWatts}W`);
+            if (message.includes('EM.GetStatus')) {
+                let currentPower = this.getCurrentPower();
+
+                if (!currentPower) {
+                    currentPower = { total: 0, l1: 0, l2: 0, l3: 0 };
+                }
+
+                const l1 = currentPower.l1 ?? 0
+                const l2 = currentPower.l2 ?? 0;
+                const l3 = currentPower.l3 ?? 0;
+                const total = currentPower.total ?? 0;
+
+                Logger.debug(`Marstek request from ${rinfo.address}:${rinfo.port}, replying with L1:${l1}W L2:${l2}W L3:${l3}W Total:${total}W`);
 
                 // This is not how the shelly protocol actually looks like, but it is enough for the parser in the marstek firmware
                 // As a bonus, it should be incomprehensible to anything other than the marstek battery
-                //
-                // Additionally, since the storage is single phase anyway and the firmware does not understand floats,
-                // we just pretend that all power is happening on L1
-                const payload = `a_act_power==${currentWatts},b_act_power==0,c_act_power==0,total_act_power==${currentWatts}`;
+                const payload = `a_act_power==${l1},b_act_power==${l2},c_act_power==${l3},total_act_power==${total}`;
 
                 this.server.send(payload, rinfo.port, rinfo.address, (err) => {
                     if (err) {
@@ -59,15 +59,15 @@ class MarstekShellyEmu {
             Logger.error("Failed to bind MarstekShellyEmu to port 1010", e);
         }
     }
-    
-    updateMeterReading(watts) {
-        this.meterPower = watts;
+
+    updateMeterReading(powerData) {
+        this.meterPower = powerData;
     }
 
-    setOverride(watts) {
-        Logger.debug(`Received override value of ${watts}w`);
+    setOverride(powerData) {
+        Logger.debug(`Received override value: ${JSON.stringify(powerData)}`);
 
-        this.overridePower = watts;
+        this.overridePower = powerData;
 
         if (this.overrideExpiryTimeout) {
             clearTimeout(this.overrideExpiryTimeout);
@@ -75,7 +75,7 @@ class MarstekShellyEmu {
 
         this.overrideExpiryTimeout = setTimeout(() => {
             Logger.debug(`Override expired.`);
-            
+
             this.overridePower = null;
 
             this.overrideExpiryTimeout = null;
